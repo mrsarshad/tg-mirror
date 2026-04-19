@@ -19,7 +19,7 @@ jobs:
           
           for CH in $CHANNELS; do
             echo "Getting: $CH"
-            curl -L "https://telegram.ws/s/$CH" -o "mirrors/${CH}.html"
+            curl -L "https://tg.dev/s/$CH" -o "mirrors/${CH}.html" || true
             sleep 2
           done
 
@@ -30,7 +30,7 @@ jobs:
           <html dir="rtl">
           <head><meta charset="UTF-8"><title>Mirror Channels</title></head>
           <body>
-          <h1>لیست کانال‌ها</h1>
+          <h1>📡 لیست کانال‌ها</h1>
           <ul>
           <li><a href="mirrors/ConfigX2ray.html">ConfigX2ray</a></li>
           <li><a href="mirrors/configproxyhub.html">configproxyhub</a></li>
