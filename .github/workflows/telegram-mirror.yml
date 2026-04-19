@@ -1,0 +1,50 @@
+name: Mirror 4 Telegram Channels
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  mirror-all:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch all channels
+        run: |
+          mkdir -p mirrors
+          
+          CHANNELS="ConfigX2ray configproxyhub saministamm asrnovin_ir"
+          
+          for CH in $CHANNELS; do
+            echo "Getting: $CH"
+            curl -L "https://telegram.ws/s/$CH" -o "mirrors/${CH}.html"
+            sleep 2
+          done
+
+      - name: Create index page
+        run: |
+          cat > index.html << 'EOF'
+          <!DOCTYPE html>
+          <html dir="rtl">
+          <head><meta charset="UTF-8"><title>Mirror Channels</title></head>
+          <body>
+          <h1>لیست کانال‌ها</h1>
+          <ul>
+          <li><a href="mirrors/ConfigX2ray.html">ConfigX2ray</a></li>
+          <li><a href="mirrors/configproxyhub.html">configproxyhub</a></li>
+          <li><a href="mirrors/saministamm.html">saministamm</a></li>
+          <li><a href="mirrors/asrnovin_ir.html">asrnovin_ir</a></li>
+          </ul>
+          </body>
+          </html>
+          EOF
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "actions@github.com"
+          git add mirrors/ index.html
+          git diff --quiet && git diff --staged --quiet || git commit -m "update $(date '+%Y-%m-%d %H:%M:%S')"
+          git push
